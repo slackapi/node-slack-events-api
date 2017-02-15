@@ -9,7 +9,7 @@ const http = require('http');
 const express = require('express');
 const bodyParser = require('body-parser');
 
-// Initialize event adapter using verification token from environment variables
+// *** Initialize event adapter using verification token from environment variables ***
 const slackEvents = slackEventsApi.createSlackEventAdapter(process.env.SLACK_VERIFICATION_TOKEN, {
   includeBody: true
 });
@@ -61,12 +61,12 @@ app.get('/auth/slack/callback',
   }
 );
 
-// Plug the event adapter into the express app as middleware
+// *** Plug the event adapter into the express app as middleware ***
 app.use('/event', slackEvents.expressMiddleware());
 
-// -- Attach listeners to the event adapter --
+// *** Attach listeners to the event adapter ***
 
-// Greeting any user that says "hi"
+// *** Greeting any user that says "hi" ***
 slackEvents.on('message', (message, body) => {
   // Only deal with messages that have no subtype (plain messages) and contain 'hi'
   if (!message.subtype && message.text.indexOf('hi') >= 0) {
@@ -82,7 +82,7 @@ slackEvents.on('message', (message, body) => {
   }
 });
 
-// Responding to reactions with the same emoji
+// *** Responding to reactions with the same emoji ***
 slackEvents.on('reaction_added', (event, body) => {
   // Initialize a client
   const slack = getClientByTeamId(body.team_id);
