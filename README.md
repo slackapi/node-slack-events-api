@@ -43,9 +43,9 @@ for free.
 section. This URL depends on how you used the previous two commands. For example, using the
 default path and the subdomain name "mybot":
 
-  > With ngrok: `https://mybot.ngrok.io/event`
+  > With ngrok: `https://mybot.ngrok.io/slack/events`
 
-  > With localtunnel: `https://mybot.localtunnel.me/event`
+  > With localtunnel: `https://mybot.localtunnel.me/slack/events`
 
 4.  Once the verification is complete, you can terminate the two processes (verification tool and
 development server). You can proceed to selecting the event types your App needs.
@@ -101,7 +101,7 @@ app.use(bodyParser.json());
 
 // Mount the event handler on a route
 // NOTE: you must mount to a path that matches the Request URL that was configured earlier
-app.use('/event', slackEvents.expressMiddleware());
+app.use('/slack/events', slackEvents.expressMiddleware());
 
 // Attach listeners to events by Slack Event "type". See: https://api.slack.com/events/message.im
 slackEvents.on('message', (event)=> {
