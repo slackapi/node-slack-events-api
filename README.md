@@ -26,9 +26,9 @@ URL, you will get a verification failure, but also there will now be a **Verific
 available in the Basic Information section.
 
 1.  Start the verification tool:
-`./node_modules/.bin/slack-verify --token <token> [--path=/event] [--port=3000]`. You will need to
-substitute your own Verification Token for `<token>`. You may also want to choose your own `path`
-and/or `port`.
+`./node_modules/.bin/slack-verify --token <token> [--path=/slack/events] [--port=3000]`. You will
+need to substitute your own Verification Token for `<token>`. You may also want to choose your own
+`path` and/or `port`.
 
 2.  Start your development proxy. We recommend using [ngrok](https://ngrok.com/) for its stability,
 but using a custom subdomain will require a paid plan. Otherwise,
