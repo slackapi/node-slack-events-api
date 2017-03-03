@@ -1,3 +1,4 @@
+import debugFactory from 'debug';
 import { packageIdentifier } from './util';
 
 export const errorCodes = {
@@ -11,9 +12,12 @@ const responseStatuses = {
   REDIRECT: 302,
 };
 
+const debug = debugFactory('@slack/events-api:express-middleware');
+
 export function createExpressMiddleware(adapter, middlewareOptions = {}) {
   function sendResponse(res) {
     return function _sendResponse(err, responseOptions = {}) {
+      debug('sending response - error: %s, responseOptions: %o', err, responseOptions);
       // Deal with errors up front
       if (err) {
         res.status(responseStatuses.FAILURE);
@@ -37,12 +41,21 @@ export function createExpressMiddleware(adapter, middlewareOptions = {}) {
       }
 
       // Lastly, send the response
-      res.send(responseOptions.content || '');
+      const content = responseOptions.content || '';
+      debug('response body: %s', content);
+      res.send();
+      res.on('finish', () => {
+        // NOTE: uses undocumented API of http.ServerResponse, but OK for logging code
+        // eslint-disable-next-line no-underscore-dangle
+        debug('response finished - status: %d, headers: %o', res.statusCode, res._headers);
+      });
     };
   }
 
   function handleError(error, res, next) {
+    debug('handling error - message: %s, code: %s', error.message, error.code);
     if (middlewareOptions.propagateErrors) {
+      debug('propagating error for next middleware');
       next(error);
       return;
     }
@@ -56,6 +69,7 @@ export function createExpressMiddleware(adapter, middlewareOptions = {}) {
   }
 
   return function slackEventAdapterMiddleware(req, res, next) {
+    debug('request recieved - method: %s, path: %s', req.method, req.path);
     // Check that the request body has been parsed
     if (!req.body) {
       const error = new Error('The incoming HTTP request did not have a parsed body.');
@@ -66,25 +80,30 @@ export function createExpressMiddleware(adapter, middlewareOptions = {}) {
 
     // Handle URL verification challenge
     if (req.body.type === 'url_verification') {
+      debug('handling url verification');
       if (req.body.token !== adapter.verificationToken) {
+        debug('url verification failure');
         const error = new Error('Slack event challenge failed.');
         error.code = errorCodes.TOKEN_VERIFICATION_FAILURE;
         error.body = req.body;
         handleError(error, res, next);
         return;
       }
+      debug('url verification success');
       sendResponse(res)(null, { content: req.body.challenge });
       return;
     }
 
     // Handle request token verification
     if (!req.body.token || req.body.token !== adapter.verificationToken) {
+      debug('request token verification failure');
       const error = new Error('Slack event verification failed');
       error.code = errorCodes.TOKEN_VERIFICATION_FAILURE;
       error.body = req.body;
       handleError(error, res, next);
       return;
     }
+    debug('request token verification success');
 
     const emitArguments = [req.body.event];
     if (adapter.includeBody) {
@@ -96,9 +115,14 @@ export function createExpressMiddleware(adapter, middlewareOptions = {}) {
     if (adapter.waitForResponse) {
       emitArguments.push(sendResponse(res));
     }
+
     try {
+      debug('emitting event -  type: %s, arguments: %o', req.body.event.type, emitArguments);
       adapter.emit(req.body.event.type, ...emitArguments);
     } catch (error) {
+      // TODO: these errors will never have codes, but otherwise this message should look like the
+      // one in handleError()
+      debug('emitting error - %o', error);
       adapter.emit('error', error);
     }
 
