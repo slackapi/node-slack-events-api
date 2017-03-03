@@ -45,7 +45,9 @@ export function createExpressMiddleware(adapter, middlewareOptions = {}) {
       debug('response body: %s', content);
       res.send(content);
       res.on('finish', () => {
-        // NOTE: uses undocumented API of http.ServerResponse, but OK for logging code
+        // res._headers is an undocumented property, but we feel comfortable using it because:
+        // 1. express depends on it and express is so foundational in node
+        // 2. this is logging code and the risk of this causing a break is minimal
         // eslint-disable-next-line no-underscore-dangle
         debug('response finished - status: %d, headers: %o', res.statusCode, res._headers);
       });
@@ -120,8 +122,9 @@ export function createExpressMiddleware(adapter, middlewareOptions = {}) {
       debug('emitting event -  type: %s, arguments: %o', req.body.event.type, emitArguments);
       adapter.emit(req.body.event.type, ...emitArguments);
     } catch (error) {
-      // TODO: these errors will never have codes, but otherwise this message should look like the
-      // one in handleError()
+      // TODO: there's an opportunity to refactor this code along with the code inside
+      // handleError(). the main difference is that errors in this code path will not have a `code`
+      // property.
       debug('emitting error - %o', error);
       adapter.emit('error', error);
     }
