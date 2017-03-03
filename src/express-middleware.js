@@ -43,7 +43,7 @@ export function createExpressMiddleware(adapter, middlewareOptions = {}) {
       // Lastly, send the response
       const content = responseOptions.content || '';
       debug('response body: %s', content);
-      res.send();
+      res.send(content);
       res.on('finish', () => {
         // NOTE: uses undocumented API of http.ServerResponse, but OK for logging code
         // eslint-disable-next-line no-underscore-dangle
