@@ -48,7 +48,7 @@ that Slack should not retry that request, you should set `responseOptions.failWi
 truthy value. If you want Slack to send the request to a different URL, you should set the
 value of `responseOptions.redirectLocation` to the URL you want. Lastly, if you'd like to
 set the body of the response, you should set the `responseOptions.content` value to a String of
-body content. EventEmitters allow you to add many handlers, but its recommended that when using the
+body content. EventEmitters allow you to add many handlers, but it's recommended when using the
 `waitForResponse` option that you only have one handler on each event type. You should always handle
 the `error` event too. It's your application's responsibility to make sure that the `respond()`
 callback is invoked exactly once.
