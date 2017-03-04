@@ -165,7 +165,11 @@ describe('when using the built-in HTTP server', function () {
           })
           .catch(function (error) {
             assert(error instanceof Error);
-            done();
+            self.adapter.start(self.port)
+              .then(function () {
+                done();
+              })
+              .catch(done);
           });
       })
       .catch(done);
