@@ -154,4 +154,20 @@ describe('when using the built-in HTTP server', function () {
         return self.adapter.start(self.port);
       });
   });
+
+  it('should not stop if there is no built-in HTTP server running', function (done) {
+    var self = this;
+    self.adapter.stop()
+      .then(function () {
+        self.adapter.stop()
+          .then(function () {
+            done(new Error('should not be able to stop an already stopped server'));
+          })
+          .catch(function (error) {
+            assert(error instanceof Error);
+            done();
+          });
+      })
+      .catch(done);
+  });
 });
