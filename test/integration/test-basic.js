@@ -130,3 +130,28 @@ describe('when using middleware inside your own express application', function (
       });
   });
 });
+
+describe('when using the built-in HTTP server', function () {
+  beforeEach(function () {
+    this.port = process.env.PORT || '8080';
+    // This is the default path
+    this.path = '/slack/events';
+    this.verificationToken = 'VERIFICATION_TOKEN';
+    this.adapter = createSlackEventAdapter(this.verificationToken, {
+      waitForResponse: true
+    });
+    return this.adapter.start(this.port);
+  });
+
+  afterEach(function () {
+    return this.adapter.stop();
+  });
+
+  it('should be able to stop the built-in HTTP server', function () {
+    var self = this;
+    return self.adapter.stop()
+      .then(function () {
+        return self.adapter.start(self.port);
+      });
+  });
+});
