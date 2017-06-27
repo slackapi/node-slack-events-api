@@ -6,7 +6,7 @@ This example shows a fully functioning but very simple application using the
 ## Setup
 
 ### Create a Slack app
-1. Create an app at [https://api.slack.com/apps](api.slack.com/apps)
+1. Create an app at [api.slack.com/apps](https://api.slack.com/apps)
 2. Click on `Bot Users` on the left side navigation
 3. Give your bot user a name (e.g. "@greetandreact"), turn _Always Show My Bot as Online_ on, and save your
 changes
@@ -15,8 +15,8 @@ changes
 
 1. Get the code
 	- Either clone this repo and run `npm install`
-	- Or visit https://glitch.com/edit/#!/remix/slack-greet-and-react-example
-2. Set the following environment variables (all available on the *Basic Information* page) to `.env` (see `.env.sample`)
+	- Or visit [glitch.com/edit/#!/remix/slack-greet-and-react-example](https://glitch.com/edit/#!/remix/slack-greet-and-react-example)
+2. Set the following environment variables (all available on the *Basic Information* page) to `.env` (see `.env.sample` if you're developing locally)
 	- `SLACK_CLIENT_ID`: You app's Client ID
 	- `SLACK_CLIENT_SECRET`: Your app's Client Secret
 	- `SLACK_VERIFICATION_TOKEN`: Your app's Verification Token
