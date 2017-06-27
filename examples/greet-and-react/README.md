@@ -36,7 +36,6 @@ changes
 1.  Visit the URL of your development proxy
 	- ngrok or Glitch URL
 2. Click the "Add to Slack" button, and complete the installation
-
-Then you can invite the Bot User into a channel (e.g. `/invite @greetandreact`), and say "hi" in the
+3. You can invite the Bot User into a channel (e.g. `/invite @greetandreact`), and say "hi" in the
 channel. It should respond to you. You can also add reactions to messages and the Bot User will send
 a message using the same emoji.
