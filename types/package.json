@@ -1,0 +1,22 @@
+{
+  "name": "@slack/events-api-types",
+  "version": "1.0.0",
+  "description": "Slack Events API Typescript definitions",
+  "main": "index.js",
+  "scripts": {
+    "lint": "tslint index.d.ts",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "tatethurston@gmail.com <tatethurston@gmail.com>",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/express": "^4.11.0",
+    "@types/node": "^8.5.2",
+    "dtslint": "^0.2.0",
+    "tslint": "^5.8.0",
+    "typescript": "^2.6.2"
+  },
+  "dependencies": {
+    "@slack/events-api": "git://github.com/tatethurston/node-slack-events-api.git#typescript-definitions"
+  }
+}

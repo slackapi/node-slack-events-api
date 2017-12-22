@@ -3,6 +3,7 @@
   "version": "1.0.1",
   "description": "Slack Events API module",
   "main": "dist/index.js",
+  "types": "types/index.d.ts",
   "bin": {
     "slack-verify": "dist/verify.js"
   },
@@ -23,8 +24,8 @@
     "prepare": "npm run build"
   },
   "optionalDependencies": {
-    "express": "^4.0.0",
-    "body-parser": "^1.4.3"
+    "body-parser": "^1.4.3",
+    "express": "^4.0.0"
   },
   "devDependencies": {
     "babel-cli": "^6.18.0",
