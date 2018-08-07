@@ -125,7 +125,7 @@ http.createServer(app).listen(port, () => {
 });
 ```
 
-> ⚠️ As of `v2.0.0`, the Events API adapter parses raw request bodies while performing request signing verification. This means developers no longer need to use `body-parser` middleware to parse urlencoded requests.
+> ⚠️ As of `v2.0.0`, the Events API adapter parses raw request bodies while performing request signing verification. This means developers no longer need to use `body-parser` middleware to parse JSON-encoded requests.
 
 **NOTE**: To use the example above, you need to add a Team Event such as `message.im` in the Event
 Subscriptions section of your Slack App configuration settings.

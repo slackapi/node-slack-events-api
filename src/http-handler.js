@@ -4,8 +4,7 @@ import crypto from 'crypto';
 import { packageIdentifier } from './util';
 
 export const errorCodes = {
-  NO_BODY_PARSER: 'SLACKEVENTMIDDLEWARE_NO_BODY_PARSER',
-  SIGNATURE_VERIFICATION_FAILURE: 'SLACKMESSAGEMIDDLEWARE_REQUEST_SIGNATURE_VERIFICATION_FAILURE',
+  SIGNATURE_VERIFICATION_FAILURE: 'SLACKHTTPHANDLER_REQUEST_SIGNATURE_VERIFICATION_FAILURE',
   REQUEST_TIME_FAILURE: 'SLACKHTTPHANDLER_REQUEST_TIMELIMIT_FAILURE',
 };
 
@@ -19,7 +18,6 @@ const responseStatuses = {
 const debug = debugFactory('@slack/events-api:http-handler');
 
 export function createHTTPHandler(adapter) {
-  // Removed middlewareOptions because no next() -- is this okay?
   const poweredBy = packageIdentifier();
 
   /**
