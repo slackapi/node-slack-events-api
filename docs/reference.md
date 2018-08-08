@@ -52,6 +52,15 @@ body content. EventEmitters allow you to add many handlers, but it's recommended
 responsibility to make sure that the `respond()` callback is invoked exactly once.  You should always
 handle the `error` event too - otherwise unhandled errors will crash your app.
 
+#### requestListener()
+
+This method returns a function that can be attached to the
+[`request` event of an `http.Server`](https://nodejs.org/dist/latest/docs/api/http.html#http_event_request)
+instance. The function also works as the `requestListener` parameter of
+[`http.createServer()`](https://nodejs.org/dist/latest/docs/api/http.html#http_http_createserver_options_requestlistener). This
+function is the primary way to plug the adapter into your own HTTP server, no matter which framework (or not)
+you choose.
+
 #### expressMiddleware()
 
 This method returns a middleware function that can be mounted into your own Express application.
