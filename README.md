@@ -70,10 +70,9 @@ middleware into the application the same as the one you configure in Slack.
 
 Before you can save the subscription, your app will need to respond to a challenge at your chosen
 request URL. I know what you're thinking: 🤔 _How can I respond if I haven't written my app yet?_
-For this situation, this package comes with a command line tool which starts a server that can
-properly respond to the challenge. If you're using the development proxy as described above, you can
-run the tool from inside your project directory (after this package has been installed) with the
-following command:
+This package comes with a command line tool which starts a server that can properly respond to the
+challenge. If you're using the development proxy as described above, you can run the tool from
+inside your project directory (after this package has been installed) with the following command:
 
 ```bash
 ./node_modules/.bin/slack-verify --secret <signing_secret> [--path=/slack/events] [--port=3000]
@@ -84,10 +83,10 @@ are optional. If your request URL includes a different path, you should specify 
 `--path=/my/path/here` (no brackets). Similarly, if your development proxy is forwarding requests to
 a different port, you should specify it with `--port=8888` (no brackets). If you're using the
 defaults, you can ignore everything after `<signing_secret>`. You should **only use the command line
-tool in development**. If you're app up and running, the adapter will automatically respond to
+tool in development**. If your app is up and running, the adapter will automatically respond to
 challenges.
 
-At this point you might need to click "Retry" in the Request URL input to ask Slack to send the challenge
+You might need to click "Retry" in the Request URL input to ask Slack to send the challenge
 again. Once the request URL is verified, you can terminate the two processes (command line tool and
 development server) with Ctrl+C.
 
@@ -95,16 +94,16 @@ Add each event type your app requires. In the tables below, you may add Workspac
 Once you've selected all the event types, be sure to **Save Changes**.
 
 Lastly, if you've added event types that require scopes your app did not previously have, you'll need to
-reinstall the app into the workspace(s) where you'd like Slack to send your app the new events. To quickly
-install the app to your Development Workspace, visit the **Install App** page and (re)install the app.
+reinstall the app into the workspace(s) from where you'd like Slack to send your app new events. To quickly
+install the app to your Development Workspace, visit the **Install App** page.
 
 ## Usage
 
 The easiest way to start using the Events API is by using the built-in HTTP server.
 
 ```javascript
-// Initialize using verification token from environment variables
-const createSlackEventAdapter = require('@slack/events-api').createSlackEventAdapter;
+// Initialize using signing secret from environment variables
+const { createSlackEventAdapter } = require('@slack/events-api');
 const slackEvents = createSlackEventAdapter(process.env.SLACK_SIGNING_SECRET);
 const port = process.env.PORT || 3000;
 
@@ -122,7 +121,7 @@ slackEvents.start(port).then(() => {
 });
 ```
 
-**NOTE**: To use the example above, you need to add a Team Event such as `message.im` in the Event
+**NOTE**: To use the example above, you need to add a Workspace Event such as `message.im` in the Event
 Subscriptions section of your Slack App configuration settings.
 
 ### Using with Express
@@ -133,8 +132,8 @@ middleware by calling the `expressMiddleware()` method;
 ```javascript
 const http = require('http');
 
-// Initialize using verification token from environment variables
-const createSlackEventAdapter = require('@slack/events-api').createSlackEventAdapter;
+// Initialize using signing secret from environment variables
+const { createSlackEventAdapter } = require('@slack/events-api');
 const slackEvents = createSlackEventAdapter(process.env.SLACK_SIGNING_SECRET);
 const port = process.env.PORT || 3000;
 
@@ -160,18 +159,24 @@ http.createServer(app).listen(port, () => {
 });
 ```
 
-> ⚠️ As of `v2.0.0`, the Events API adapter parses raw request bodies while performing request signing verification. This means developers no longer need to use `body-parser` middleware to parse JSON-encoded requests.
+> ⚠️ As of `v2.0.0`, the Events API adapter parses raw request bodies while performing request signing verification. This means apps no longer need to use `body-parser` middleware to parse JSON-encoded requests.
 
 **NOTE**: To use the example above, you need to add a Team Event such as `message.im` in the Event
 Subscriptions section of your Slack App configuration settings.
 
-## Documentation
+## Examples
+
+*  [Greet And React](examples/greet-and-react) - A ready to run sample app that listens for messages and
+   emoji reactions, and responds to them. It is built on top of the [Express](https://expressjs.com) web framework. It also implements [OAuth](https://api.slack.com/docs/oauth) to demonstate how an app can handle
+   installation to additional workspaces and be structured to handle events from multiple workspaces.
+
+## Reference Documentation
 
 To learn more, see the [reference documentation](docs/reference.md).
 
 ## Support
 
-Need help? Join the [Bot Developer Hangout](http://dev4slack.xoxco.com/) team and talk to us in
+Need help? Join the [Bot Developer Hangout](https://community.botkit.ai) team and talk to us in
 [#slack-api](https://dev4slack.slack.com/messages/slack-api/).
 
 You can also [create an Issue](https://github.com/slackapi/node-slack-events-api/issues/new)
