@@ -31,7 +31,7 @@ Get started by [creating a Slack App](https://api.slack.com/apps/new) if you hav
 On the **Basic Information** page, in the section for **App Credentials**, note the
 **Signing Secret**. You will need it to initialize the adapter.
 
-> ⚠️ As of `v1.0.0`, the Events API adapter no longer accepts legacy verification tokens.
+> ⚠️ As of `v2.0.0`, the Events API adapter no longer accepts legacy verification tokens.
 You must pass a signing secret [to verify requests from Slack](https://api.slack.com/docs/verifying-requests-from-slack).
 
 Select the **Event Subscriptions** feature, and enable it. Input a **Request URL**.
