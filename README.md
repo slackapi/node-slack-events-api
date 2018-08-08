@@ -68,6 +68,8 @@ Express middlware, you can set whichever path you like, just remember to make th
 middleware into the application the same as the one you configure in Slack.
 </details>
 
+<br/>
+
 <details>
 <summary><strong>I'm getting an error about the `challenge` parameter. Help?</strong></summary>
 
@@ -93,6 +95,8 @@ You might need to click "Retry" in the Request URL input to ask Slack to send th
 again. Once the request URL is verified, you can terminate the two processes (command line tool and
 development server) with Ctrl+C.
 </details>
+
+<br/>
 
 Add each event type your app requires. In the tables below, you may add Workspace events and Bot events.
 Once you've selected all the event types, be sure to **Save Changes**.
