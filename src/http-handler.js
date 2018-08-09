@@ -21,21 +21,19 @@ const debug = debugFactory('@slack/events-api:http-handler');
  * Method to verify signature of requests
  *
  * @param {string} signingSecret - Signing secret used to verify request signature
- * @param {Object} requestHeaders - Request headers
+ * @param {string} requestSignature - Signature from request 'x-slack-signature' header
+ * @param {number} requestTimestamp - Timestamp from request 'x-slack-request-timestamp' header
  * @param {string} body - Raw body string
  * @returns {boolean} Indicates if request is verified
  */
-export function verifyRequestSignature(signingSecret, requestHeaders, body) {
-  // Request signature
-  const signature = requestHeaders['x-slack-signature'];
-  // Request timestamp
-  const ts = requestHeaders['x-slack-request-timestamp'];
-
+export function verifyRequestSignature({
+  signingSecret, requestSignature, requestTimestamp, body,
+}) {
   // Divide current date to match Slack ts format
   // Subtract 5 minutes from current time
   const fiveMinutesAgo = Math.floor(Date.now() / 1000) - (60 * 5);
 
-  if (ts < fiveMinutesAgo) {
+  if (requestTimestamp < fiveMinutesAgo) {
     debug('request is older than 5 minutes');
     const error = new Error('Slack request signing verification failed');
     error.code = errorCodes.REQUEST_TIME_FAILURE;
@@ -43,8 +41,8 @@ export function verifyRequestSignature(signingSecret, requestHeaders, body) {
   }
 
   const hmac = crypto.createHmac('sha256', signingSecret);
-  const [version, hash] = signature.split('=');
-  hmac.update(`${version}:${ts}:${body}`);
+  const [version, hash] = requestSignature.split('=');
+  hmac.update(`${version}:${requestTimestamp}:${body}`);
 
   if (hash !== hmac.digest('hex')) {
     debug('request signature is not valid');
@@ -153,7 +151,12 @@ export function createHTTPHandler(adapter) {
       .then((r) => {
         const rawBody = r.toString();
 
-        if (verifyRequestSignature(adapter.signingSecret, req.headers, rawBody)) {
+        if (verifyRequestSignature({
+          signingSecret: adapter.signingSecret,
+          requestSignature: req.headers['x-slack-signature'],
+          requestTimestamp: req.headers['x-slack-request-timestamp'],
+          body: rawBody,
+        })) {
           // Request signature is verified
           // Parse raw body
           const body = JSON.parse(rawBody);
