@@ -26,9 +26,9 @@ A helper method for verifying a request signature according to the docs here: ht
 The `params.signingSecret` is a required string parameter which you can find in your Slack app's Basic
 Information.
 
-The `params.requestSignature` is a required string parameter taken from the 'x-slack-signature' header of your request.
+The `params.requestSignature` is a required string parameter taken from the 'x-slack-signature' header of the request.
 
-The `params.requestTimestamp` is a required numeric parameter taken from the 'x-slack-request-timestamp' header of your request.
+The `params.requestTimestamp` is a required numeric parameter taken from the 'x-slack-request-timestamp' header of the request.
 
 The `params.body` is a required string parameter for the raw, unparsed request body. If your application automatically parses JSON request you may need to retrieve the raw body prior to parsing.
 
