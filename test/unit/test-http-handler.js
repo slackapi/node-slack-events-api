@@ -33,25 +33,13 @@ describe('http-handler', function () {
       assert.isTrue(isVerified);
     });
 
-    it('should return true for a valid request with a rawBody payload', function () {
-      var req = createRawBodyRequest(correctSigningSecret, this.correctDate, correctRawBody);
-      var isVerified = verifyRequestSignature({
-        signingSecret: correctSigningSecret,
-        requestTimestamp: req.headers['x-slack-request-timestamp'],
-        requestSignature: req.headers['x-slack-signature'],
-        body: req.rawBody.toString()
-      });
-
-      assert.isTrue(isVerified);
-    });
-
     it('should throw for a request signed with a different secret', function () {
       var req = createRequest(correctSigningSecret, this.correctDate, correctRawBody);
       assert.throws(() => verifyRequestSignature({
         signingSecret: 'INVALID_SECRET',
         requestTimestamp: req.headers['x-slack-request-timestamp'],
         requestSignature: req.headers['x-slack-signature'],
-        body: req.body
+        body: correctRawBody
       }), 'Slack request signing verification failed');
     });
   });
@@ -85,11 +73,12 @@ describe('http-handler', function () {
       this.requestListener(req, res);
     });
 
-    it('should verify a correct signing secret for a payload with a rawBody field', function (done) {
+    it('should verify a correct signing secret for a request with rawBody attribute', function (done) {
       var emit = this.emit;
       var res = this.res;
       var req = createRawBodyRequest(correctSigningSecret, this.correctDate, correctRawBody);
       emit.resolves({ status: 200 });
+      getRawBodyStub.resolves(Buffer.from(correctRawBody));
       res.end.callsFake(function () {
         assert.equal(res.statusCode, 200);
         done();
@@ -97,7 +86,30 @@ describe('http-handler', function () {
       this.requestListener(req, res);
     });
 
+    it('should fail request signing verification for a request with a body but no rawBody', function (done) {
+      var res = this.res;
+      var req = createRequest(correctSigningSecret, this.correctDate, correctRawBody);
+      req.body = {};
+      getRawBodyStub.resolves(Buffer.from(correctRawBody));
+      res.end.callsFake(function () {
+        assert.equal(res.statusCode, 500);
+        done();
+      });
+      this.requestListener(req, res);
+    });
+
     it('should fail request signing verification with an incorrect signing secret', function (done) {
+      var res = this.res;
+      var req = createRequest('INVALID_SECRET', this.correctDate, correctRawBody);
+      getRawBodyStub.resolves(Buffer.from(correctRawBody));
+      res.end.callsFake(function () {
+        assert.equal(res.statusCode, 404);
+        done();
+      });
+      this.requestListener(req, res);
+    });
+
+    it('should fail request signing verification when a request has body and no rawBody attribute', function (done) {
       var res = this.res;
       var req = createRequest('INVALID_SECRET', this.correctDate, correctRawBody);
       getRawBodyStub.resolves(Buffer.from(correctRawBody));
